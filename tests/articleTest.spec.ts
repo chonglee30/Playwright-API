@@ -1,26 +1,26 @@
-import { test } from '../utils/fixtures'
-import {expect} from '@playwright/test'
-import { APILogger } from '../utils/logger'
+import { test } from '../utils/fixtures';
+import {expect} from '@playwright/test';
+import { APILogger } from '../utils/logger';
 
-let authToken: string 
+let authToken: string
 
-test.beforeAll('Get Token', async({api}) => {
+test.beforeAll('Get Token', async({api, config}) => {
   const tokenResponse = await api.path('/users/login')
      .body({
-      "user":{"email":"vantest1@test.com","password":"Welcome#1"}
+      "user":{"email":config.userEmail,"password":config.userPassword}
       })
     .postRequest(200)
     authToken = `Token `+tokenResponse.user.token 
 })
 
-test('Log Test', () => {
-  const logger = new APILogger()
-  logger.requestLog('POST', 'https://test.com/api', {Authorization: 'token'}, {foo: 'bar'})
-  logger.responseLog(200, {foo: 'bar'})
+// test('Log Test', () => {
+//   const logger = new APILogger()
+//   logger.requestLog('POST', 'https://test.com/api', {Authorization: 'token'}, {foo: 'bar'})
+//   logger.responseLog(200, {foo: 'bar'})
 
-  const logs = logger.getCurrentLog()
-  console.log(logs)
-})
+//   const logs = logger.getCurrentLog()
+//   console.log(logs)
+// })
 
 
 test('Get Articles Request', async({api}) => {

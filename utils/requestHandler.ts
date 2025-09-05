@@ -109,12 +109,12 @@ export class RequestHandler {
   }
 
   private statusCodeValidateLogger(actualStatusCode: number, expectStatusCode: number, currentMethod: Function) {
-    if (actualStatusCode !==expectStatusCode) {
+     if (actualStatusCode !==expectStatusCode) {
       const logs = this.apiLogger.getCurrentLog()
       const error = new Error(`Expected Status: ${expectStatusCode} but received ${actualStatusCode} \n API Logs:\n${logs}`)
       Error.captureStackTrace(error, currentMethod)
       throw error
-    }
+     }
 
     // improvement: test result fail
   }
