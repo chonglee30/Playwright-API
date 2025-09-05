@@ -1,0 +1,22 @@
+{
+  "name": "playwright-api",
+  "version": "1.0.0",
+  "description": "API Test using Playwright",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chonglee30/Playwright-API.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chonglee30/Playwright-API/issues"
+  },
+  "homepage": "https://github.com/chonglee30/Playwright-API#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.3.1"
+  }
+}
