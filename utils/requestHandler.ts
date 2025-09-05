@@ -4,7 +4,7 @@ import { APILogger } from "./logger";
 
 export class RequestHandler {
   // 5 basic components
-  private baseUrl:string 
+  private baseUrl:string | undefined
   private apiPath: string = ''
   private queryParams: object ={}
   private apiHeaders: Record<string,string> = {}
@@ -50,7 +50,7 @@ export class RequestHandler {
     const response = await this.request.get(url, {
       headers: this.apiHeaders
     })
-
+    this.removeRequestFields()
     const actualStatus = response.status()
     const responseJSON = await response.json()
     this.apiLogger.responseLog(actualStatus, responseJSON)
@@ -65,7 +65,7 @@ export class RequestHandler {
       headers: this.apiHeaders,
       data: this.apiBody
     })
-
+    this.removeRequestFields()
     const actualStatus = response.status()
     const responseJSON = await response.json()
     this.apiLogger.responseLog(actualStatus, responseJSON)
@@ -80,7 +80,7 @@ export class RequestHandler {
       headers: this.apiHeaders,
       data: this.apiBody
     })
-
+    this.removeRequestFields()
     const actualStatus = response.status()
     const responseJSON = await response.json()
     this.apiLogger.responseLog(actualStatus, responseJSON)
@@ -94,7 +94,7 @@ export class RequestHandler {
     const response = await this.request.delete(url, {
       headers: this.apiHeaders
     })
-
+    this.removeRequestFields()
     const actualStatus = response.status()
     this.apiLogger.responseLog(actualStatus)
     this.statusCodeValidateLogger(actualStatus, statusCode, this.deleteRequest)
@@ -115,8 +115,14 @@ export class RequestHandler {
       Error.captureStackTrace(error, currentMethod)
       throw error
      }
-
     // improvement: test result fail
   }
 
+  private removeRequestFields() {
+    this.baseUrl = undefined
+    this.apiPath = ''
+    this.queryParams = {}
+    this.apiHeaders = {}
+    this.apiBody = {}
+  }
 }

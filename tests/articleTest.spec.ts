@@ -31,7 +31,7 @@ test('Get Articles Request', async({api}) => {
      //.headers({Authorizatin: 'authToken*'})
      .getRequest(200)
   expect(response.articles.length).toBeLessThanOrEqual(10)
-  expect(response.articlesCount).toBeGreaterThanOrEqual(10)   
+  expect(response.articlesCount).toBeGreaterThanOrEqual(10)  
 })
 
 test('Create, Update and Delete Article', async({api}) => {
