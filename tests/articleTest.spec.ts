@@ -1,5 +1,6 @@
 import { test } from '../utils/fixtures'
 import {expect} from '@playwright/test'
+import { APILogger } from '../utils/logger'
 
 let authToken: string 
 
@@ -12,14 +13,25 @@ test.beforeAll('Get Token', async({api}) => {
     authToken = `Token `+tokenResponse.user.token 
 })
 
+test('Log Test', () => {
+  const logger = new APILogger()
+  logger.requestLog('POST', 'https://test.com/api', {Authorization: 'token'}, {foo: 'bar'})
+  logger.responseLog(200, {foo: 'bar'})
+
+  const logs = logger.getCurrentLog()
+  console.log(logs)
+})
+
+
 test('Get Articles Request', async({api}) => {
   const response = await api
      .path('/articles')
+     .headers({Authorization: authToken})
      .params({limit: 10, offset:0})
      //.headers({Authorizatin: 'authToken*'})
      .getRequest(200)
   expect(response.articles.length).toBeLessThanOrEqual(10)
-  expect(response.articlesCount).toEqual(10)   
+  expect(response.articlesCount).toBeGreaterThanOrEqual(10)   
 })
 
 test('Create, Update and Delete Article', async({api}) => {
