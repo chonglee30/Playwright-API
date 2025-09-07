@@ -3,6 +3,7 @@ import { RequestHandler } from './requestHandler'
 import { APILogger } from './logger'
 import {config} from '../env.config'
 import { createAuthToken } from '../helpers/createAuthToken'
+import { setCustomExpectLogger } from './custom-expect';
 
 export type TestOptions = {
   api: RequestHandler
@@ -22,6 +23,7 @@ export const test = base.extend<TestOptions, WorkerFixture>({
   api: async({request, authToken}, use) => {
     const baseUrl = 'https://conduit-api.bondaracademy.com/api'
     const apiLogger = new APILogger()
+    setCustomExpectLogger(apiLogger)
     const requestHandler = new RequestHandler(request,config.apiUrl,apiLogger, authToken)
     await use(requestHandler)
   },

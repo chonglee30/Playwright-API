@@ -42,7 +42,9 @@ test('Get Articles Request', async({api}) => {
      .params({limit: 10, offset:0})
      .getRequest(200)
   expect(response.articles.length).toBeLessThanOrEqual(10)
-  expect(response.articlesCount).toBeGreaterThanOrEqual(10)  
+  expect(response.articlesCount).toBeGreaterThanOrEqual(10)
+  await expect(response).shouldMatchSchema('articles', 'GET_articles')
+   
 })
 
 test('Create, Update and Delete Article', async({api}) => {
@@ -52,6 +54,7 @@ const createArticleResponse = await api.path('/articles')
      .postRequest(201)
 
   expect(createArticleResponse.article.title).toEqual('Seahawks Vs 49ers')
+  await expect(createArticleResponse).shouldMatchSchema('articles', 'POST_articles')
   const slugId = createArticleResponse.article.slug
 
   // Update:
@@ -60,6 +63,7 @@ const createArticleResponse = await api.path('/articles')
      .putRequest(200)
 
   expect(updateArticleResponse.article.title).toEqual('Updated Seahawks Game')
+  await expect(updateArticleResponse).shouldMatchSchema('articles', 'PUT_articles') 
   const updatedSlugId = updateArticleResponse.article.slug   
   
   const articlesResponse = await api
