@@ -2,6 +2,8 @@ import { test } from '../utils/fixtures';
 import {expect} from '@playwright/test';
 import { APILogger } from '../utils/logger';
 import { createAuthToken } from '../helpers/createAuthToken';
+import articleRequestPayload from '../request-objects/articleRequest.json'
+import {generateRandomArticle} from '../utils/dataGenerator'
 
 // let authToken: string
 
@@ -48,21 +50,23 @@ test('Get Articles Request', async({api}) => {
 })
 
 test('Create, Update and Delete Article', async({api}) => {
+const articleRequest = generateRandomArticle()
   // Create:
 const createArticleResponse = await api.path('/articles')
-     .body({"article":{"title":"Seahawks Vs 49ers","description": "Sack Purdy","body":"Seahawks 23 vs 17 49ers","tagList":[]}})
+     .body(articleRequest)
      .postRequest(201)
 
-  expect(createArticleResponse.article.title).toEqual('Seahawks Vs 49ers')
+  expect(createArticleResponse.article.title).toEqual(articleRequest.article.title)
   await expect(createArticleResponse).shouldMatchSchema('articles', 'POST_articles')
   const slugId = createArticleResponse.article.slug
 
   // Update:
+  const updatedArticleRequest = generateRandomArticle()
   const updateArticleResponse = await api.path(`/articles/${slugId}`)
-     .body({"article":{"title":"Updated Seahawks Game","description": "JSN and K9 Score","body":"Seahawks 23 vs 17 49ers","tagList":[]}})
+     .body(updatedArticleRequest)
      .putRequest(200)
 
-  expect(updateArticleResponse.article.title).toEqual('Updated Seahawks Game')
+  expect(updateArticleResponse.article.title).toEqual(updatedArticleRequest.article.title)
   await expect(updateArticleResponse).shouldMatchSchema('articles', 'PUT_articles') 
   const updatedSlugId = updateArticleResponse.article.slug   
   
@@ -71,7 +75,7 @@ const createArticleResponse = await api.path('/articles')
   .params({limit: 10, offset:0})
   .getRequest(200)
 
-  expect(articlesResponse.articles[0].title).toEqual('Updated Seahawks Game')
+  expect(articlesResponse.articles[0].title).toEqual(updatedArticleRequest.article.title)
 
   // Delete:
   api.path(`/articles/${updatedSlugId}`)
@@ -82,5 +86,5 @@ const createArticleResponse = await api.path('/articles')
      .params({limit: 10, offset:0})
      .getRequest(200)   
 
-  expect(articleDeleteResponse.articles[0].title).not.toEqual('Updated Seahawks Game')   
+  expect(articleDeleteResponse.articles[0].title).not.toEqual(updatedArticleRequest.article.title)   
 })
