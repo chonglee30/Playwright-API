@@ -47,7 +47,6 @@ test('Get Articles Request', async({api}) => {
   expect(response.articles.length).shouldBeLessThanOrEqual(10)
   expect(response.articlesCount).shouldBeGreaterThanOrEqual(10)
   await expect(response).shouldMatchSchema('articles', 'GET_articles')
-   
 })
 
 test('Create, Update and Delete Article', async({api}) => {

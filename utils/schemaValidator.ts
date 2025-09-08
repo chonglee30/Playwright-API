@@ -40,9 +40,31 @@ export async function validateSchema(dirName: string, fileName: string, response
 async function generateNewSchema(responseBody: object, schemaPath: string) {
   try {
     const generatedSchema = createSchema(responseBody);
+    addDateTimeFormatValue(generatedSchema)
     await fs.mkdir(path.dirname(schemaPath), {recursive: true})
     await fs.writeFile(schemaPath, JSON.stringify(generatedSchema, null, 4))
   } catch (error) {
     throw new Error(`Failed to create new schema: ${error.message}`)
+  }
+}
+
+function addDateTimeFormatValue(schema: any) {
+  if (typeof schema !== 'object' || schema === null) return;
+
+   // Process array items recursively
+   if (schema.type ==='array' && schema.items) {
+    addDateTimeFormatValue(schema.items);
+  }
+
+  if (schema.type ==='object' && schema.properties) {
+    for (const [key, value] of Object.entries(schema.properties)) {
+      if (key==='createdAt' || key ==='updatedAt') {
+        if ((value as any).type === 'string') {
+          (value as any).format = 'date-time';
+        }
+      }
+      // Recursively process nested objects and arrays
+      addDateTimeFormatValue(value)
+    }
   }
 }
