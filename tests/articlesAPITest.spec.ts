@@ -1,5 +1,6 @@
 import { test } from '../utils/fixtures';
-import {expect} from '@playwright/test';
+//import {expect} from '@playwright/test';
+import { expect } from '../utils/custom-expect';
 import { APILogger } from '../utils/logger';
 import { createAuthToken } from '../helpers/createAuthToken';
 import articleRequestPayload from '../request-objects/articleRequest.json'
@@ -34,8 +35,8 @@ test('Get Articles Request with Clear Auth Header', async({api}) => {
      .params({limit: 10, offset:0})
      .clearAuth()
      .getRequest(200)
-  expect(response.articles.length).toBeLessThanOrEqual(10)
-  expect(response.articlesCount).toBeGreaterThanOrEqual(10)  
+  expect(response.articles.length).shouldBeLessThanOrEqual(10)
+  expect(response.articlesCount).shouldBeGreaterThanOrEqual(10)  
 })
 
 test('Get Articles Request', async({api}) => {
@@ -43,8 +44,8 @@ test('Get Articles Request', async({api}) => {
      .path('/articles')
      .params({limit: 10, offset:0})
      .getRequest(200)
-  expect(response.articles.length).toBeLessThanOrEqual(10)
-  expect(response.articlesCount).toBeGreaterThanOrEqual(10)
+  expect(response.articles.length).shouldBeLessThanOrEqual(10)
+  expect(response.articlesCount).shouldBeGreaterThanOrEqual(10)
   await expect(response).shouldMatchSchema('articles', 'GET_articles')
    
 })
@@ -56,7 +57,7 @@ const createArticleResponse = await api.path('/articles')
      .body(articleRequest)
      .postRequest(201)
 
-  expect(createArticleResponse.article.title).toEqual(articleRequest.article.title)
+  expect(createArticleResponse.article.title).shouldEqual(articleRequest.article.title)
   await expect(createArticleResponse).shouldMatchSchema('articles', 'POST_articles')
   const slugId = createArticleResponse.article.slug
 
@@ -66,7 +67,7 @@ const createArticleResponse = await api.path('/articles')
      .body(updatedArticleRequest)
      .putRequest(200)
 
-  expect(updateArticleResponse.article.title).toEqual(updatedArticleRequest.article.title)
+  expect(updateArticleResponse.article.title).shouldEqual(updatedArticleRequest.article.title)
   await expect(updateArticleResponse).shouldMatchSchema('articles', 'PUT_articles') 
   const updatedSlugId = updateArticleResponse.article.slug   
   
@@ -75,7 +76,7 @@ const createArticleResponse = await api.path('/articles')
   .params({limit: 10, offset:0})
   .getRequest(200)
 
-  expect(articlesResponse.articles[0].title).toEqual(updatedArticleRequest.article.title)
+  expect(articlesResponse.articles[0].title).shouldEqual(updatedArticleRequest.article.title)
 
   // Delete:
   api.path(`/articles/${updatedSlugId}`)
@@ -86,5 +87,5 @@ const createArticleResponse = await api.path('/articles')
      .params({limit: 10, offset:0})
      .getRequest(200)   
 
-  expect(articleDeleteResponse.articles[0].title).not.toEqual(updatedArticleRequest.article.title)   
+  expect(articleDeleteResponse.articles[0].title).not.shouldEqual(updatedArticleRequest.article.title)   
 })
