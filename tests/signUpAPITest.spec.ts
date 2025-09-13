@@ -30,3 +30,50 @@ test.describe('Username Error Validation Test Scenario', () => {
     })
   })
 });
+
+test.describe('Password Error Validation Test Scenario', () => {
+  [
+    { password: 'ddddddd', passwordErrorMessage: 'is too short (minimum is 8 characters)'},
+    { password: 'dddddddd', usernameErrorMessage: ''},
+    { password: 'ddd22ddd22ddd22ddd22', passwordErrorMessage: ''},
+    { password: 'ddd22ddd22ddd22ddd221', passwordErrorMessage: 'is too long (maximum is 20 characters)'},
+  ].forEach(({password, passwordErrorMessage}) => {
+    test(`Error Message Validation for Password: ${password}`, async({api}) => {
+      const signUpResponse = await api
+      .path('/users')
+      .body({
+          "user": {
+            "email": "a",
+            "password": password,
+            "username": "aa"
+          }
+        })
+      .clearAuth()
+      .postRequest(422)
+
+      if ((password.length >=8) && (password.length<=20)) {
+        expect(signUpResponse.errors).not.toHaveProperty('password')  // no password error property
+      } else {
+        expect(signUpResponse.errors.password[0]).toEqual(passwordErrorMessage) // password error property
+      }
+      console.log(signUpResponse)
+    })
+  })
+});
+
+test.describe('Email Error Validation Test Scenario', () => {
+  test('Error Message Validation for Email', async({api}) => {
+    const signUpResponse = await api
+    .path('/users')
+    .body({
+        "user": {
+          "email": "a",
+          "password": "aa",
+          "username": "aa"
+        }
+      })
+    .clearAuth()
+    .postRequest(422)
+    expect(signUpResponse.errors.email[0]).toEqual('is invalid')
+  });
+}); 
